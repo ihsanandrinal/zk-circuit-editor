@@ -1,6 +1,3 @@
-import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client-proof-provider';
-import { createZKIR } from '@midnight-ntwrk/midnight-js-types';
-
 class ZkService {
   constructor() {
     this.configProvider = null;
@@ -40,6 +37,28 @@ class ZkService {
         throw new Error('WebAssembly not supported - required for ZK computations');
       }
 
+      // Lazy load MidnightJS libraries only when needed
+      let httpClientProofProvider, createZKIR;
+      
+      try {
+        console.log('Loading MidnightJS libraries...');
+        
+        // Dynamic imports to avoid SSR issues
+        const [proofProviderModule, typesModule] = await Promise.all([
+          import('@midnight-ntwrk/midnight-js-http-client-proof-provider'),
+          import('@midnight-ntwrk/midnight-js-types')
+        ]);
+        
+        httpClientProofProvider = proofProviderModule.httpClientProofProvider;
+        createZKIR = typesModule.createZKIR;
+        
+        console.log('MidnightJS libraries loaded successfully');
+        
+      } catch (importError) {
+        console.error('Failed to load MidnightJS libraries:', importError);
+        throw new Error(`MidnightJS library loading failed: ${importError.message}. This may be due to browser compatibility issues.`);
+      }
+
       // For browser environment, we'll use a simplified config approach
       // The NodeZkConfigProvider is Node.js specific and can't run in browser
       this.configProvider = {
@@ -53,7 +72,13 @@ class ZkService {
         ? process.env.REACT_APP_MIDNIGHT_ENDPOINT 
         : 'http://localhost:8080';
       
-      this.proofProvider = httpClientProofProvider(endpoint);
+      try {
+        this.proofProvider = httpClientProofProvider(endpoint);
+        this.createZKIR = createZKIR;
+      } catch (providerError) {
+        console.error('Failed to initialize proof provider:', providerError);
+        throw new Error(`Proof provider initialization failed: ${providerError.message}`);
+      }
 
       this.isInitialized = true;
       console.log('ZK service initialized successfully');
@@ -88,8 +113,12 @@ class ZkService {
         throw new Error('Invalid private inputs: must be an object');
       }
 
-      // Create ZKIR from compact code
-      const zkir = createZKIR(compactCode);
+      // Create ZKIR from compact code using the dynamically loaded function
+      if (!this.createZKIR) {
+        throw new Error('ZKIR creation function not available - service initialization may have failed');
+      }
+      
+      const zkir = this.createZKIR(compactCode);
       
       console.log('Created ZKIR:', zkir);
 

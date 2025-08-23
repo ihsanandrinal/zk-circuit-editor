@@ -18,6 +18,17 @@ circuit AdditionCircuit {
   const [isLoading, setIsLoading] = useState(false);
   const [testResults, setTestResults] = useState(null);
 
+  useEffect(() => {
+    console.log('State updated:', {
+      hasCode: !!compactCode,
+      hasPublicInputs: !!publicInputs,
+      hasPrivateInputs: !!privateInputs,
+      isLoading,
+      hasError: !!result?.error,
+      hasResult: !!result
+    });
+  }, [compactCode, publicInputs, privateInputs, isLoading, result]);
+
   const handleGenerateProof = async () => {
     setIsLoading(true);
     setResult(null);
@@ -67,6 +78,31 @@ circuit AdditionCircuit {
     }
   };
 
+  const debugProofGeneration = async () => {
+    console.log('🧪 Starting proof generation test');
+    console.log('Inputs:', { compactCode, publicInputs, privateInputs });
+    
+    setIsLoading(true);
+    console.log('Loading state set to true');
+    
+    try {
+      const publicInputsObj = JSON.parse(publicInputs);
+      const privateInputsObj = JSON.parse(privateInputs);
+      const result = await generateProof(compactCode, publicInputsObj, privateInputsObj);
+      console.log('✅ Proof generated:', result);
+      setResult(result);
+    } catch (error) {
+      console.log('❌ Error caught:', error);
+      setResult({
+        success: false,
+        error: { message: error.message }
+      });
+    } finally {
+      setIsLoading(false);
+      console.log('Loading state set to false');
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <div className="bg-white rounded-lg shadow-lg p-6">
@@ -84,11 +120,19 @@ circuit AdditionCircuit {
               Quick Test
             </button>
             <button
+              data-testid="generate-proof"
               onClick={handleRunTests}
               disabled={isLoading}
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
             >
               Run Full Test Suite
+            </button>
+            <button
+              onClick={debugProofGeneration}
+              disabled={isLoading}
+              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 disabled:opacity-50"
+            >
+              Debug Proof Generation
             </button>
           </div>
         </div>
@@ -101,6 +145,7 @@ circuit AdditionCircuit {
                 Compact Circuit Code
               </label>
               <textarea
+                data-testid="code-editor"
                 value={compactCode}
                 onChange={(e) => setCompactCode(e.target.value)}
                 rows={8}
@@ -114,6 +159,7 @@ circuit AdditionCircuit {
                 Public Inputs (JSON)
               </label>
               <textarea
+                data-testid="public-inputs"
                 value={publicInputs}
                 onChange={(e) => setPublicInputs(e.target.value)}
                 rows={3}
