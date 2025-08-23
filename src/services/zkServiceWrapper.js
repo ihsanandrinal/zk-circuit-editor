@@ -113,6 +113,17 @@ class ZkServiceWrapper {
     return Math.abs(hash).toString(16);
   }
 
+  // Method to get service status
+  getServiceStatus() {
+    return {
+      isInitialized: this.isInitialized,
+      isReady: this.isInitialized,
+      mode: 'mock',
+      message: 'Running in demonstration mode - ZK proof generation is simulated for UI testing',
+      error: null
+    };
+  }
+
   async generateProof(compactCode, publicInputs, privateInputs) {
     try {
       await this.initialize();
@@ -154,9 +165,14 @@ class ZkServiceWrapper {
 // Create singleton instance
 const zkServiceWrapper = new ZkServiceWrapper();
 
-// Export the main function
+// Export the main function and status
 export const generateProof = async (compactCode, publicInputs, privateInputs) => {
   return await zkServiceWrapper.generateProof(compactCode, publicInputs, privateInputs);
+};
+
+export const getServiceStatus = async () => {
+  await zkServiceWrapper.initialize();
+  return zkServiceWrapper.getServiceStatus();
 };
 
 export default zkServiceWrapper;

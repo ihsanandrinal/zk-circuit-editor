@@ -23,6 +23,7 @@ circuit AdditionCircuit {
   const [errors, setErrors] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [zkServiceLoaded, setZkServiceLoaded] = useState(false);
+  const [serviceStatus, setServiceStatus] = useState(null);
   const [selectedExample, setSelectedExample] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -40,16 +41,25 @@ circuit AdditionCircuit {
       console.log('Loading ZK service...');
       
       // Dynamic import of ZK service wrapper (browser-safe)
-      const { generateProof } = await import('../services/zkServiceWrapper.js');
+      const { generateProof, getServiceStatus } = await import('../services/zkServiceWrapper.js');
       
       // Store the function in a ref or state for later use
       window.zkGenerateProof = generateProof;
       setZkServiceLoaded(true);
       
+      // Get service status
+      const status = await getServiceStatus();
+      setServiceStatus(status);
+      
       console.log('ZK service loaded successfully');
     } catch (error) {
       console.error('Failed to load ZK service:', error);
       setErrors(`Failed to load ZK service: ${error.message}`);
+      setServiceStatus({
+        mode: 'error',
+        message: 'Failed to load ZK service',
+        error: { message: error.message }
+      });
     } finally {
       setLoading(false);
     }
@@ -263,12 +273,56 @@ circuit AdditionCircuit {
           )}
         </div>
         
-        {/* ZK Service status */}
-        {!zkServiceLoaded && !loading && (
-          <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+        {/* Service Status Indicator */}
+        {serviceStatus ? (
+          <div className={`mb-4 p-3 rounded-lg border ${
+            serviceStatus.mode === 'production'
+              ? 'bg-green-50 border-green-200'
+              : serviceStatus.mode === 'mock'
+              ? 'bg-yellow-50 border-yellow-200'
+              : serviceStatus.mode === 'error'
+              ? 'bg-red-50 border-red-200'
+              : 'bg-blue-50 border-blue-200'
+          }`}>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm">
+                {serviceStatus.mode === 'production' ? '🟢' : 
+                 serviceStatus.mode === 'mock' ? '🟡' : 
+                 serviceStatus.mode === 'error' ? '🔴' : '🔵'}
+              </span>
+              <div className="flex-1">
+                <span className={`text-sm font-medium ${
+                  serviceStatus.mode === 'production'
+                    ? 'text-green-800'
+                    : serviceStatus.mode === 'mock'
+                    ? 'text-yellow-800'
+                    : serviceStatus.mode === 'error'
+                    ? 'text-red-800'
+                    : 'text-blue-800'
+                }`}>
+                  {serviceStatus.mode === 'production' ? 'Production Mode' :
+                   serviceStatus.mode === 'mock' ? 'Demo Mode' :
+                   serviceStatus.mode === 'error' ? 'Service Error' : 'Initializing...'}
+                </span>
+                <p className={`text-xs mt-0.5 ${
+                  serviceStatus.mode === 'production'
+                    ? 'text-green-700'
+                    : serviceStatus.mode === 'mock'
+                    ? 'text-yellow-700'
+                    : serviceStatus.mode === 'error'
+                    ? 'text-red-700'
+                    : 'text-blue-700'
+                }`}>
+                  {serviceStatus.message}
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : !zkServiceLoaded && !loading && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
             <div className="flex items-center">
-              <div className="text-yellow-400 mr-2">⚠️</div>
-              <div className="text-sm text-yellow-800">
+              <div className="text-blue-400 mr-2">ℹ️</div>
+              <div className="text-sm text-blue-800">
                 ZK service will be loaded when you generate your first proof.
               </div>
             </div>
