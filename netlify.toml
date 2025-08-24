@@ -1,0 +1,35 @@
+[build]
+  publish = ".next"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+  NODE_OPTIONS = "--max-old-space-size=1024"
+
+# Redirect all requests to Next.js
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Handle WASM files
+[[headers]]
+  for = "*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+    Cross-Origin-Embedder-Policy = "credentialless"
+
+# API routes fallback (for development)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Environment variables
+[context.production.environment]
+  NEXT_PUBLIC_MIDNIGHT_ENDPOINT = "http://localhost:8080"
+
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_MIDNIGHT_ENDPOINT = "http://localhost:8080"
