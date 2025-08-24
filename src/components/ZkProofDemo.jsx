@@ -4,8 +4,9 @@
 import '../services/globalSetup.js';
 
 import React, { useState, useEffect } from 'react';
-import { generateProof } from '../services/zkService.js';
-import { runQuickTest, createTestHarness } from '../services/zkService.test.js';
+// Dynamic imports for zkService to avoid SSR issues
+// import { generateProof } from '../services/zkService.js';
+// import { runQuickTest, createTestHarness } from '../services/zkService.test.js';
 
 const ZkProofDemo = () => {
   const [compactCode, setCompactCode] = useState(`// Simple addition circuit

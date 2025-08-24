@@ -59,8 +59,8 @@ async function checkZKService() {
     
     if (!endpoint) {
       return {
-        status: 'demo_mode',
-        message: 'No MidnightJS endpoint configured, running in demo mode'
+        status: 'warning',
+        message: 'No MidnightJS endpoint configured - will use localhost:8080 by default'
       };
     }
 

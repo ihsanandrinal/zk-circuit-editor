@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: zk-circuit-editor
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=1024"
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+    disk:
+      name: zk-editor-disk
+      size: 1GB
+      mount: /opt/render/project/src
+    # Environment optimized for ZK computations
+    resources:
+      memory: 1GB
+      cpu: 1

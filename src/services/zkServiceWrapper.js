@@ -38,7 +38,7 @@ class ZkServiceWrapper {
       }
 
       // Use the real ZK service instead of mock
-      const { getZkService } = await import('./zkService.js');
+      const { getZkService } = await import('./zkService.client.js');
       this.zkService = getZkService();
       
       // Initialize the real service
