@@ -48,141 +48,76 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* CRITICAL: Ultimate MidnightJS Compatibility Layer - Loads BEFORE everything */}
+        {/* CRITICAL: Smart MidnightJS Compatibility Layer */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // ULTIMATE MIDNIGHT JS COMPATIBILITY - RUNS IMMEDIATELY
-              console.log('⚡ ULTIMATE MidnightJS Compatibility Layer Loading...');
+              // SMART MIDNIGHT JS COMPATIBILITY - MINIMAL BUT EFFECTIVE
+              console.log('🎯 Smart MidnightJS Compatibility Loading...');
               
-              // Skip if not in browser
-              if (typeof window === 'undefined') {
-                console.log('🚫 Server environment - skipping');
-              } else {
-                // BN254 curve field prime
-                const BN254_FIELD_PRIME = BigInt('21888242871839275222246405745257275088548364400416034343698204186575808495616');
+              if (typeof window !== 'undefined') {
+                // BN254 field prime
+                const BN254_PRIME = BigInt('21888242871839275222246405745257275088548364400416034343698204186575808495616');
                 
-                // The ultimate persistent maxField function
-                const ULTIMATE_MAX_FIELD = () => {
-                  console.log('🔥 ULTIMATE maxField called');
-                  return BN254_FIELD_PRIME;
-                };
+                // Simple, reliable maxField function
+                const maxFieldFn = () => BN254_PRIME;
                 
-                // Create unbreakable proxy factory
-                const createUltimateProxy = (name) => {
-                  return new Proxy({}, {
-                    get(target, prop) {
-                      if (prop === 'maxField') {
-                        console.log('🔥 ' + name + '.maxField accessed via proxy');
-                        return ULTIMATE_MAX_FIELD;
-                      }
-                      return target[prop] || ULTIMATE_MAX_FIELD;
-                    },
-                    set(target, prop, value) {
-                      if (prop === 'maxField') {
-                        console.log('🛡️ BLOCKED: ' + name + '.maxField overwrite attempt');
-                        return true;
-                      }
-                      target[prop] = value;
-                      return true;
-                    },
-                    has(target, prop) {
-                      return prop === 'maxField' || prop in target;
-                    },
-                    defineProperty(target, prop, desc) {
-                      if (prop === 'maxField') {
-                        console.log('🛡️ BLOCKED: defineProperty on ' + name + '.maxField');
-                        return true;
-                      }
-                      return Object.defineProperty(target, prop, desc);
-                    }
-                  });
-                };
-                
-                // Set up ALL MidnightJS patterns with ultimate protection
-                const patterns = ['l', 'u', 'ocrt', 'runtime', 'compact', 'midnight'];
-                
-                patterns.forEach(pattern => {
-                  try {
-                    // Use non-configurable property descriptor to prevent overwrites
-                    Object.defineProperty(window, pattern, {
-                      value: createUltimateProxy('window.' + pattern),
-                      writable: false,
-                      configurable: false,
-                      enumerable: true
-                    });
-                    console.log('🔒 Protected window.' + pattern + ' with ultimate proxy');
-                  } catch (e) {
-                    // If defineProperty fails, use direct assignment
-                    window[pattern] = createUltimateProxy('window.' + pattern);
-                    console.log('⚠️ Fallback protection for window.' + pattern);
+                // Only set up what's needed - no over-engineering
+                const setupPattern = (pattern) => {
+                  if (!window[pattern]) {
+                    window[pattern] = {};
                   }
                   
-                  // Same for globalThis
-                  if (typeof globalThis !== 'undefined') {
+                  // Use a simple getter that's hard to overwrite
+                  if (!window[pattern].maxField) {
                     try {
-                      Object.defineProperty(globalThis, pattern, {
-                        value: createUltimateProxy('globalThis.' + pattern),
-                        writable: false,
-                        configurable: false,
+                      Object.defineProperty(window[pattern], 'maxField', {
+                        get: () => maxFieldFn,
+                        configurable: true,
                         enumerable: true
                       });
                     } catch (e) {
-                      globalThis[pattern] = createUltimateProxy('globalThis.' + pattern);
+                      window[pattern].maxField = maxFieldFn;
                     }
                   }
-                });
+                };
                 
-                // Also protect direct maxField
-                try {
-                  Object.defineProperty(window, 'maxField', {
-                    value: ULTIMATE_MAX_FIELD,
-                    writable: false,
-                    configurable: false,
-                    enumerable: true
-                  });
-                } catch (e) {
-                  window.maxField = ULTIMATE_MAX_FIELD;
+                // Set up only the patterns that are actually causing errors
+                ['l', 'u', 'ocrt'].forEach(setupPattern);
+                
+                // Also set direct maxField as backup
+                if (!window.maxField) {
+                  window.maxField = maxFieldFn;
                 }
                 
-                // Ultra-aggressive monitoring and restoration
-                const ultraMonitor = () => {
-                  patterns.forEach(pattern => {
-                    if (!window[pattern] || typeof window[pattern].maxField !== 'function') {
-                      console.log('🚨 EMERGENCY: Restoring ' + pattern);
-                      try {
-                        Object.defineProperty(window, pattern, {
-                          value: createUltimateProxy('window.' + pattern),
-                          writable: false,
-                          configurable: false,
-                          enumerable: true
-                        });
-                      } catch (e) {
-                        window[pattern] = createUltimateProxy('window.' + pattern);
-                      }
+                // Light monitoring - only when needed
+                let monitorActive = true;
+                const smartMonitor = () => {
+                  if (!monitorActive) return;
+                  
+                  ['l', 'u', 'ocrt'].forEach(pattern => {
+                    if (window[pattern] && typeof window[pattern].maxField !== 'function') {
+                      console.log('🔧 Restoring ' + pattern + '.maxField');
+                      setupPattern(pattern);
                     }
                   });
                 };
                 
-                // Monitor every 25ms for maximum protection
-                setInterval(ultraMonitor, 25);
+                // Monitor less aggressively - every 100ms for first 10 seconds
+                const monitorInterval = setInterval(smartMonitor, 100);
+                setTimeout(() => {
+                  clearInterval(monitorInterval);
+                  monitorActive = false;
+                  console.log('📱 Smart monitoring complete');
+                }, 10000);
                 
-                // Test all patterns
-                console.log('🧪 ULTIMATE COMPATIBILITY TESTS:');
-                patterns.forEach(pattern => {
-                  try {
-                    const result = window[pattern].maxField();
-                    console.log('✅ window.' + pattern + '.maxField() = ' + typeof result);
-                  } catch (e) {
-                    console.error('❌ window.' + pattern + '.maxField() failed:', e.message);
-                  }
-                });
+                // Simple test
+                console.log('🧪 Smart compatibility test:');
+                console.log('  - window.u.maxField type:', typeof window.u?.maxField);
+                console.log('  - window.l.maxField type:', typeof window.l?.maxField);
                 
-                // Mark as ready
-                window._ULTIMATE_COMPAT_READY = true;
                 window._midnightjsGlobalSetupComplete = true;
-                
-                console.log('🎉 ULTIMATE MidnightJS Compatibility Layer ACTIVE');
+                console.log('✅ Smart MidnightJS compatibility ready');
               }
             `,
           }}
