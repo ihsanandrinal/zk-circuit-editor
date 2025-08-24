@@ -60,10 +60,10 @@ const InputPanel = ({
           rows={3}
           className={`w-full p-2 lg:p-3 border rounded-md font-mono text-xs sm:text-sm resize-y min-h-[60px]
             ${loading 
-              ? 'bg-gray-100 cursor-not-allowed' 
+              ? 'bg-slate-100 cursor-not-allowed text-gray-900' 
               : publicInputsValidation.isValid
-                ? 'border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white'
-                : 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50'
+                ? 'border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-slate-100 text-gray-900'
+                : 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50 text-gray-900'
             }`}
           placeholder='{"a": 5, "b": 3}'
         />
@@ -94,10 +94,10 @@ const InputPanel = ({
           rows={3}
           className={`w-full p-2 lg:p-3 border rounded-md font-mono text-xs sm:text-sm resize-y min-h-[60px]
             ${loading 
-              ? 'bg-gray-100 cursor-not-allowed' 
+              ? 'bg-slate-100 cursor-not-allowed text-gray-900' 
               : privateInputsValidation.isValid
-                ? 'border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white'
-                : 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50'
+                ? 'border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-slate-100 text-gray-900'
+                : 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50 text-gray-900'
             }`}
           placeholder='{}'
         />
@@ -116,19 +116,20 @@ const InputPanel = ({
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
         <button
+          data-testid="generate-proof-button"
           onClick={onGenerateProof}
           disabled={loading || !publicInputsValidation.isValid || !privateInputsValidation.isValid}
-          className={`flex-1 py-3 px-4 font-medium rounded-md transition-colors duration-200 text-sm sm:text-base
+          className={`flex-1 py-3 px-4 font-medium rounded-md transition-colors duration-200 text-sm sm:text-base min-h-[44px] touch-manipulation
             ${loading || !publicInputsValidation.isValid || !privateInputsValidation.isValid
-              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500'
+              ? 'bg-gray-400 text-gray-100 cursor-not-allowed'
+              : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 active:bg-indigo-800'
             }`}
         >
           {loading ? (
             <span className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              <span className="hidden sm:inline">Generating...</span>
-              <span className="sm:hidden">Loading...</span>
+              <span className="hidden sm:inline">Generating proof...</span>
+              <span className="sm:hidden">Generating...</span>
             </span>
           ) : (
             <>

@@ -1,0 +1,317 @@
+{
+  "timestamp": "2025-08-24T07:42:55.731Z",
+  "url": "https://zk-circuit-editor.vercel.app",
+  "tests": [
+    {
+      "name": "Desktop - Page Load",
+      "passed": true,
+      "details": "1132ms (200)",
+      "timestamp": "2025-08-24T07:42:57.029Z"
+    },
+    {
+      "name": "Desktop - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:02.040Z"
+    },
+    {
+      "name": "Desktop - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:43:02.047Z"
+    },
+    {
+      "name": "Desktop - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:07.052Z"
+    },
+    {
+      "name": "Desktop - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:12.072Z"
+    },
+    {
+      "name": "Desktop - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:43:12.078Z"
+    },
+    {
+      "name": "Desktop - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:43:13.110Z"
+    },
+    {
+      "name": "Desktop - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:43:13.117Z"
+    },
+    {
+      "name": "Desktop - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:43:13.130Z"
+    },
+    {
+      "name": "Laptop - Page Load",
+      "passed": true,
+      "details": "1051ms (200)",
+      "timestamp": "2025-08-24T07:43:14.238Z"
+    },
+    {
+      "name": "Laptop - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:19.251Z"
+    },
+    {
+      "name": "Laptop - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:43:19.257Z"
+    },
+    {
+      "name": "Laptop - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:24.271Z"
+    },
+    {
+      "name": "Laptop - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:29.276Z"
+    },
+    {
+      "name": "Laptop - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:43:29.282Z"
+    },
+    {
+      "name": "Laptop - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:43:30.306Z"
+    },
+    {
+      "name": "Laptop - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:43:30.312Z"
+    },
+    {
+      "name": "Laptop - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:43:30.324Z"
+    },
+    {
+      "name": "Tablet - Page Load",
+      "passed": true,
+      "details": "1067ms (200)",
+      "timestamp": "2025-08-24T07:43:31.451Z"
+    },
+    {
+      "name": "Tablet - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:36.454Z"
+    },
+    {
+      "name": "Tablet - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:43:36.460Z"
+    },
+    {
+      "name": "Tablet - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:41.471Z"
+    },
+    {
+      "name": "Tablet - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:46.487Z"
+    },
+    {
+      "name": "Tablet - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:43:46.492Z"
+    },
+    {
+      "name": "Tablet - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:43:47.525Z"
+    },
+    {
+      "name": "Tablet - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:43:47.531Z"
+    },
+    {
+      "name": "Tablet - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:43:47.541Z"
+    },
+    {
+      "name": "Mobile - Page Load",
+      "passed": true,
+      "details": "1152ms (200)",
+      "timestamp": "2025-08-24T07:43:48.744Z"
+    },
+    {
+      "name": "Mobile - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:53.756Z"
+    },
+    {
+      "name": "Mobile - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:43:53.761Z"
+    },
+    {
+      "name": "Mobile - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:43:58.769Z"
+    },
+    {
+      "name": "Mobile - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:44:03.785Z"
+    },
+    {
+      "name": "Mobile - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:44:03.790Z"
+    },
+    {
+      "name": "Mobile - Responsive Layout",
+      "passed": false,
+      "details": "Horizontal overflow detected",
+      "timestamp": "2025-08-24T07:44:03.796Z"
+    },
+    {
+      "name": "Mobile - Interactive Elements",
+      "passed": true,
+      "details": "9 interactive elements found",
+      "timestamp": "2025-08-24T07:44:03.798Z"
+    },
+    {
+      "name": "Mobile - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:44:04.835Z"
+    },
+    {
+      "name": "Mobile - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:44:04.841Z"
+    },
+    {
+      "name": "Mobile - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:44:04.852Z"
+    },
+    {
+      "name": "Performance - Response Status",
+      "passed": true,
+      "details": "HTTP 200",
+      "timestamp": "2025-08-24T07:44:05.969Z"
+    },
+    {
+      "name": "Performance - Total Load Time",
+      "passed": true,
+      "details": "1056ms",
+      "timestamp": "2025-08-24T07:44:05.969Z"
+    },
+    {
+      "name": "Performance - First Contentful Paint",
+      "passed": true,
+      "details": "176ms",
+      "timestamp": "2025-08-24T07:44:05.969Z"
+    },
+    {
+      "name": "ZK Service - WebAssembly Support",
+      "passed": true,
+      "details": "WebAssembly available",
+      "timestamp": "2025-08-24T07:44:10.114Z"
+    },
+    {
+      "name": "ZK Service - Proof Generation UI",
+      "passed": true,
+      "details": "Proof generation button found",
+      "timestamp": "2025-08-24T07:44:10.115Z"
+    },
+    {
+      "name": "ZK Service - Button State",
+      "passed": false,
+      "details": "Proof button \"⚪Compile Circuit\" is disabled",
+      "timestamp": "2025-08-24T07:44:10.179Z"
+    },
+    {
+      "name": "ZK Service - Button State",
+      "passed": false,
+      "details": "Proof button \"⚪Generate Proof\" is disabled",
+      "timestamp": "2025-08-24T07:44:10.182Z"
+    },
+    {
+      "name": "ZK Service - Button State",
+      "passed": false,
+      "details": "Proof button \"⚪Verify Proof\" is disabled",
+      "timestamp": "2025-08-24T07:44:10.185Z"
+    },
+    {
+      "name": "ZK Service - Proof Generation",
+      "passed": true,
+      "details": "Proof generation triggered: \"Compile Circuit\"",
+      "timestamp": "2025-08-24T07:44:10.233Z"
+    },
+    {
+      "name": "Error Handling - Invalid Code",
+      "passed": false,
+      "details": "No error message shown",
+      "timestamp": "2025-08-24T07:44:16.426Z"
+    },
+    {
+      "name": "Error Handling - 404 Page",
+      "passed": true,
+      "details": "404 handling detected (status: 404)",
+      "timestamp": "2025-08-24T07:44:16.749Z"
+    }
+  ],
+  "performance": {
+    "navigationStart": 0,
+    "domContentLoaded": 0,
+    "loadComplete": 0,
+    "firstPaint": 176,
+    "firstContentfulPaint": 176,
+    "totalLoadTime": 1056.3059999999969,
+    "responseStatus": 200
+  },
+  "errors": [],
+  "summary": {
+    "total": 49,
+    "passed": 28,
+    "failed": 21,
+    "passRate": "57.1%",
+    "errors": 0
+  }
+}

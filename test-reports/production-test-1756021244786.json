@@ -1,0 +1,272 @@
+{
+  "timestamp": "2025-08-24T07:38:53.774Z",
+  "url": "https://zk-circuit-editor.vercel.app",
+  "tests": [
+    {
+      "name": "Desktop - Page Load",
+      "passed": true,
+      "details": "5330ms (200)",
+      "timestamp": "2025-08-24T07:38:59.783Z"
+    },
+    {
+      "name": "Desktop - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:04.802Z"
+    },
+    {
+      "name": "Desktop - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:39:04.827Z"
+    },
+    {
+      "name": "Desktop - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:09.846Z"
+    },
+    {
+      "name": "Desktop - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:14.851Z"
+    },
+    {
+      "name": "Desktop - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:39:14.856Z"
+    },
+    {
+      "name": "Desktop - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:39:15.916Z"
+    },
+    {
+      "name": "Desktop - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:39:15.924Z"
+    },
+    {
+      "name": "Desktop - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:39:15.974Z"
+    },
+    {
+      "name": "Laptop - Page Load",
+      "passed": true,
+      "details": "1301ms (200)",
+      "timestamp": "2025-08-24T07:39:17.332Z"
+    },
+    {
+      "name": "Laptop - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:22.348Z"
+    },
+    {
+      "name": "Laptop - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:39:22.354Z"
+    },
+    {
+      "name": "Laptop - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:27.372Z"
+    },
+    {
+      "name": "Laptop - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:32.386Z"
+    },
+    {
+      "name": "Laptop - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:39:32.393Z"
+    },
+    {
+      "name": "Laptop - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:39:33.426Z"
+    },
+    {
+      "name": "Laptop - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:39:33.435Z"
+    },
+    {
+      "name": "Laptop - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:39:33.454Z"
+    },
+    {
+      "name": "Tablet - Page Load",
+      "passed": true,
+      "details": "1271ms (200)",
+      "timestamp": "2025-08-24T07:39:34.795Z"
+    },
+    {
+      "name": "Tablet - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:39.814Z"
+    },
+    {
+      "name": "Tablet - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:39:39.822Z"
+    },
+    {
+      "name": "Tablet - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:44.826Z"
+    },
+    {
+      "name": "Tablet - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:49.834Z"
+    },
+    {
+      "name": "Tablet - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:39:49.839Z"
+    },
+    {
+      "name": "Tablet - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:39:50.869Z"
+    },
+    {
+      "name": "Tablet - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:39:50.877Z"
+    },
+    {
+      "name": "Tablet - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:39:50.891Z"
+    },
+    {
+      "name": "Mobile - Page Load",
+      "passed": true,
+      "details": "1053ms (200)",
+      "timestamp": "2025-08-24T07:39:51.994Z"
+    },
+    {
+      "name": "Mobile - Mode Toggle Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:39:57.007Z"
+    },
+    {
+      "name": "Mobile - Code Editor Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:39:57.014Z"
+    },
+    {
+      "name": "Mobile - Input Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:40:02.022Z"
+    },
+    {
+      "name": "Mobile - Output Panel Present",
+      "passed": false,
+      "details": "Not found",
+      "timestamp": "2025-08-24T07:40:07.038Z"
+    },
+    {
+      "name": "Mobile - Generate Proof Button Present",
+      "passed": true,
+      "details": "Found",
+      "timestamp": "2025-08-24T07:40:07.044Z"
+    },
+    {
+      "name": "Mobile - Responsive Layout",
+      "passed": false,
+      "details": "Horizontal overflow detected",
+      "timestamp": "2025-08-24T07:40:07.050Z"
+    },
+    {
+      "name": "Mobile - Interactive Elements",
+      "passed": true,
+      "details": "9 interactive elements found",
+      "timestamp": "2025-08-24T07:40:07.052Z"
+    },
+    {
+      "name": "Mobile - Keyboard Shortcuts",
+      "passed": true,
+      "details": "Ctrl+Enter processed",
+      "timestamp": "2025-08-24T07:40:08.076Z"
+    },
+    {
+      "name": "Mobile - Example Loading",
+      "passed": false,
+      "details": "No example triggers found",
+      "timestamp": "2025-08-24T07:40:08.082Z"
+    },
+    {
+      "name": "Mobile - Text Input",
+      "passed": true,
+      "details": "Code editor accepts input",
+      "timestamp": "2025-08-24T07:40:08.093Z"
+    },
+    {
+      "name": "Performance - Response Status",
+      "passed": true,
+      "details": "HTTP 200",
+      "timestamp": "2025-08-24T07:40:09.549Z"
+    },
+    {
+      "name": "Performance - Total Load Time",
+      "passed": true,
+      "details": "1400ms",
+      "timestamp": "2025-08-24T07:40:09.549Z"
+    },
+    {
+      "name": "Performance - First Contentful Paint",
+      "passed": true,
+      "details": "188ms",
+      "timestamp": "2025-08-24T07:40:09.549Z"
+    }
+  ],
+  "performance": {
+    "navigationStart": 0,
+    "domContentLoaded": 0,
+    "loadComplete": 0,
+    "firstPaint": 188,
+    "firstContentfulPaint": 188,
+    "totalLoadTime": 1400.0853999999963,
+    "responseStatus": 200
+  },
+  "errors": [
+    "ZK functionality testing failed: page.evaluate: SyntaxError: Failed to execute 'querySelector' on 'Document': 'button:has-text(\"Proof\"), button[data-testid*=\"proof\"], button:has-text(\"Generate\")' is not a valid selector.\n    at eval (eval at evaluate (:291:30), <anonymous>:6:38)\n    at UtilityScript.evaluate (<anonymous>:293:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+    "Error handling testing failed: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Proof\"), button:has-text(\"Generate\")').first()\u001b[22m\n\u001b[2m    - locator resolved to <button disabled class=\"flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors bg-gray-100 border border-gray-300 cursor-not-allowed\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+  ],
+  "summary": {
+    "total": 41,
+    "passed": 24,
+    "failed": 17,
+    "passRate": "58.5%",
+    "errors": 2
+  }
+}

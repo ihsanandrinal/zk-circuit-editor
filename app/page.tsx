@@ -1,8 +1,13 @@
 'use client';
 
+// Import global setup FIRST to ensure MidnightJS compatibility across the entire app
+import '../src/services/globalSetup.js';
+
 import React, { useState } from 'react';
 import ZKPlayground from "../src/components/ZKPlayground";
 import ZKWorkflow from "../src/components/ZKWorkflow";
+import ErrorBoundary from "../src/components/ErrorBoundary";
+import ZKServiceErrorBoundary from "../src/components/ZKServiceErrorBoundary";
 
 export default function Home() {
   const [viewMode, setViewMode] = useState('workflow'); // 'playground' or 'workflow'
@@ -46,7 +51,11 @@ export default function Home() {
       </div>
 
       {/* Content */}
-      {viewMode === 'workflow' ? <ZKWorkflow /> : <ZKPlayground />}
+      <ErrorBoundary message="Application encountered an unexpected error">
+        <ZKServiceErrorBoundary>
+          {viewMode === 'workflow' ? <ZKWorkflow /> : <ZKPlayground />}
+        </ZKServiceErrorBoundary>
+      </ErrorBoundary>
     </div>
   );
 }

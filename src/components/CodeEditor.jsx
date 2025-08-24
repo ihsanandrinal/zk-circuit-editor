@@ -29,8 +29,8 @@ const CodeEditor = ({ value, onChange, disabled = false }) => {
           rows={isMobile ? 8 : 12}
           className={`w-full p-3 lg:p-4 border rounded-lg font-mono text-xs sm:text-sm resize-y min-h-[200px] max-h-[600px]
             ${disabled 
-              ? 'bg-gray-100 cursor-not-allowed' 
-              : 'border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-white'
+              ? 'bg-slate-100 cursor-not-allowed text-gray-900' 
+              : 'border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 bg-slate-100 text-gray-900'
             }
             transition-colors duration-200 leading-relaxed`}
           placeholder="Enter your Compact circuit code..."

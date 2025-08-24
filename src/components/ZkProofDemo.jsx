@@ -1,5 +1,8 @@
 'use client';
 
+// Import global setup FIRST to ensure MidnightJS compatibility
+import '../services/globalSetup.js';
+
 import React, { useState, useEffect } from 'react';
 import { generateProof } from '../services/zkService.js';
 import { runQuickTest, createTestHarness } from '../services/zkService.test.js';
@@ -186,7 +189,7 @@ circuit AdditionCircuit {
               disabled={isLoading}
               className="w-full py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 disabled:opacity-50"
             >
-              {isLoading ? 'Generating Proof...' : 'Generate ZK Proof'}
+              {isLoading ? 'Generating proof...' : 'Generate ZK Proof'}
             </button>
           </div>
 

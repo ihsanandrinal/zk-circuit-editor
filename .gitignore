@@ -39,3 +39,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test results and reports
+/test-results/
+/playwright-report/
+
+# development files
+*.code-workspace
+test*.js
+demo*.html
+demo*.js
+DEMO-*.md
+run-*.js
+e2e-test-scenario.js
+test.mjs
+
+.vercel

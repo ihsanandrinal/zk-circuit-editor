@@ -1,5 +1,8 @@
 'use client';
 
+// Import global setup FIRST to ensure MidnightJS compatibility
+import '../services/globalSetup.js';
+
 import React, { useState, useEffect } from 'react';
 import { compileCircuit, generateProofFromZKIR, verifyProof, getServiceStatus } from '../services/zkService.js';
 import { categorizeError, formatPerformanceMetrics, getPerformanceIndicator } from '../utils/errorHandler.js';
@@ -240,6 +243,8 @@ circuit AdditionCircuit {
           <div className={`mb-6 p-4 rounded-lg border ${
             serviceStatus.mode === 'production'
               ? 'bg-green-50 border-green-200'
+              : serviceStatus.mode === 'warning'
+              ? 'bg-green-50 border-green-200'
               : serviceStatus.mode === 'mock'
               ? 'bg-yellow-50 border-yellow-200'
               : serviceStatus.mode === 'error'
@@ -249,12 +254,15 @@ circuit AdditionCircuit {
             <div className="flex items-center space-x-3">
               <span className="text-lg">
                 {serviceStatus.mode === 'production' ? '🟢' : 
+                 serviceStatus.mode === 'warning' ? '🟢' : 
                  serviceStatus.mode === 'mock' ? '🟡' : 
                  serviceStatus.mode === 'error' ? '🔴' : '🔵'}
               </span>
               <div>
                 <h3 className={`text-sm font-semibold ${
                   serviceStatus.mode === 'production'
+                    ? 'text-green-800'
+                    : serviceStatus.mode === 'warning'
                     ? 'text-green-800'
                     : serviceStatus.mode === 'mock'
                     ? 'text-yellow-800'
@@ -263,11 +271,14 @@ circuit AdditionCircuit {
                     : 'text-blue-800'
                 }`}>
                   {serviceStatus.mode === 'production' ? 'Production Mode' :
+                   serviceStatus.mode === 'warning' ? 'Production Mode' :
                    serviceStatus.mode === 'mock' ? 'Demo Mode' :
                    serviceStatus.mode === 'error' ? 'Service Error' : 'Initializing...'}
                 </h3>
                 <p className={`text-xs ${
                   serviceStatus.mode === 'production'
+                    ? 'text-green-700'
+                    : serviceStatus.mode === 'warning'
                     ? 'text-green-700'
                     : serviceStatus.mode === 'mock'
                     ? 'text-yellow-700'
@@ -275,7 +286,9 @@ circuit AdditionCircuit {
                     ? 'text-red-700'
                     : 'text-blue-700'
                 }`}>
-                  {serviceStatus.message}
+                  {serviceStatus.mode === 'mock' 
+                    ? 'Demo mode active - proofs are simulated for testing purposes'
+                    : serviceStatus.message}
                 </p>
                 {serviceStatus.mode === 'mock' && serviceStatus.error && (
                   <details className="mt-2">
@@ -313,7 +326,15 @@ circuit AdditionCircuit {
                 } ${step.status === 'pending' ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               >
                 <span className="text-lg">{getStepIcon(step.status)}</span>
-                <span className="font-medium">{step.name}</span>
+                <span className={`font-medium ${
+                  index === workflowState.currentStep
+                    ? 'text-blue-800'
+                    : step.status === 'completed'
+                    ? 'text-green-800'
+                    : step.status === 'error'
+                    ? 'text-red-800'
+                    : 'text-gray-700'
+                }`}>{step.name}</span>
               </button>
             ))}
           </div>
@@ -337,7 +358,7 @@ circuit AdditionCircuit {
                 value={compactCode}
                 onChange={(e) => setCompactCode(e.target.value)}
                 rows={8}
-                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm"
+                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm bg-slate-100 text-gray-900"
                 placeholder="Enter your Compact circuit code..."
                 disabled={workflowState.isProcessing}
               />
@@ -351,7 +372,7 @@ circuit AdditionCircuit {
                 value={publicInputs}
                 onChange={(e) => setPublicInputs(e.target.value)}
                 rows={3}
-                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm"
+                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm bg-slate-100 text-gray-900"
                 placeholder='{"a": 5, "b": 3}'
                 disabled={workflowState.isProcessing}
               />
@@ -365,7 +386,7 @@ circuit AdditionCircuit {
                 value={privateInputs}
                 onChange={(e) => setPrivateInputs(e.target.value)}
                 rows={3}
-                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm"
+                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm bg-slate-100 text-gray-900"
                 placeholder='{}'
                 disabled={workflowState.isProcessing}
               />
@@ -374,25 +395,28 @@ circuit AdditionCircuit {
             {/* Step Action Buttons */}
             <div className="space-y-3">
               <button
+                data-testid="compile-circuit-button"
                 onClick={handleCompileCircuit}
                 disabled={!canExecuteStep(0)}
-                className="w-full py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                className="w-full py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:text-gray-300 min-h-[44px] touch-manipulation active:bg-indigo-800"
               >
                 {getStepButtonText(0)}
               </button>
               
               <button
+                data-testid="generate-proof-workflow-button"
                 onClick={handleGenerateProof}
                 disabled={!canExecuteStep(1)}
-                className="w-full py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 disabled:opacity-50"
+                className="w-full py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 disabled:opacity-50 disabled:text-gray-300 min-h-[44px] touch-manipulation active:bg-green-800"
               >
                 {getStepButtonText(1)}
               </button>
               
               <button
+                data-testid="verify-proof-button"
                 onClick={handleVerifyProof}
                 disabled={!canExecuteStep(2)}
-                className="w-full py-3 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 disabled:opacity-50"
+                className="w-full py-3 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:text-gray-300 min-h-[44px] touch-manipulation active:bg-purple-800"
               >
                 {getStepButtonText(2)}
               </button>
@@ -448,7 +472,7 @@ circuit AdditionCircuit {
                   {step.status === 'processing' && (
                     <div className="flex items-center">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                      <span className="text-blue-800 text-sm">Processing...</span>
+                      <span data-testid="workflow-processing-indicator" className="text-blue-800 text-sm">Processing...</span>
                     </div>
                   )}
                   
@@ -466,7 +490,7 @@ circuit AdditionCircuit {
                       {step.id === 'generate' && (
                         <div>
                           <strong className="text-sm">Proof Generated:</strong>
-                          <pre className="mt-1 text-xs bg-white p-2 rounded border overflow-auto max-h-32">
+                          <pre className="mt-1 text-xs bg-slate-100 text-gray-900 p-2 rounded border overflow-auto max-h-32">
                             {JSON.stringify(step.result.proof, null, 2)}
                           </pre>
                         </div>

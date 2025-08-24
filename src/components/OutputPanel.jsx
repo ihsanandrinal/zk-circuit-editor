@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ClipboardDocumentIcon, CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { ClipboardDocumentIcon, CheckIcon, ExclamationTriangleIcon, PrinterIcon } from '@heroicons/react/24/outline';
+import PrintableReport from './PrintableReport.jsx';
 
-const OutputPanel = ({ proofResult, loading, errors }) => {
+const OutputPanel = ({ proofResult, loading, errors, circuitData }) => {
   const [activeTab, setActiveTab] = useState('result');
   const [copiedStates, setCopiedStates] = useState({});
+  const [showPrintReport, setShowPrintReport] = useState(false);
 
   const copyToClipboard = async (content, key) => {
     try {
@@ -69,7 +71,7 @@ const OutputPanel = ({ proofResult, loading, errors }) => {
             <h5 className="font-medium text-green-800">Proof Metadata</h5>
             <CopyButton content={result.metadata} copyKey="metadata" />
           </div>
-          <div className="bg-white p-3 rounded border text-sm">
+          <div className="bg-slate-100 text-gray-900 p-3 rounded border text-sm">
             <div className="grid grid-cols-1 gap-2">
               <div><strong>Timestamp:</strong> {result.metadata.timestamp}</div>
               <div><strong>Code Hash:</strong> <code className="text-xs bg-gray-100 px-1 rounded">{result.metadata.compactCodeHash}</code></div>
@@ -86,7 +88,7 @@ const OutputPanel = ({ proofResult, loading, errors }) => {
             <h5 className="font-medium text-green-800">Proof Data</h5>
             <CopyButton content={result.result} copyKey="proof-data" />
           </div>
-          <pre className="bg-white p-3 rounded border text-xs overflow-auto max-h-48 whitespace-pre-wrap">
+          <pre className="bg-slate-100 text-gray-900 p-3 rounded border text-xs overflow-auto max-h-48 whitespace-pre-wrap">
             {JSON.stringify(result.result, null, 2)}
           </pre>
         </div>
@@ -119,7 +121,7 @@ const OutputPanel = ({ proofResult, loading, errors }) => {
             <strong className="text-red-800">Error Message:</strong>
             <CopyButton content={result.error?.message || 'Unknown error occurred'} copyKey="error-message" />
           </div>
-          <p className="text-sm text-red-700 p-2 bg-white rounded border">
+          <p className="text-sm text-red-700 p-2 bg-slate-100 rounded border">
             {result.error?.message || 'Unknown error occurred'}
           </p>
         </div>
@@ -166,28 +168,39 @@ const OutputPanel = ({ proofResult, loading, errors }) => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-800">Proof Results</h3>
         
-        {/* Tab Navigation */}
+        {/* Tab Navigation and Print Button */}
         {proofResult && (
-          <div className="flex rounded-md border border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="flex rounded-md border border-gray-200">
+              <button
+                onClick={() => setActiveTab('result')}
+                className={`px-3 py-1 text-sm rounded-l-md transition-colors ${
+                  activeTab === 'result' 
+                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Result
+              </button>
+              <button
+                onClick={() => setActiveTab('raw')}
+                className={`px-3 py-1 text-sm rounded-r-md border-l transition-colors ${
+                  activeTab === 'raw' 
+                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Raw JSON
+              </button>
+            </div>
+            
             <button
-              onClick={() => setActiveTab('result')}
-              className={`px-3 py-1 text-sm rounded-l-md transition-colors ${
-                activeTab === 'result' 
-                  ? 'bg-indigo-100 text-indigo-700 border-indigo-200' 
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
+              onClick={() => setShowPrintReport(true)}
+              className="flex items-center px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded border border-gray-300 transition-colors"
+              title="Print report"
             >
-              Result
-            </button>
-            <button
-              onClick={() => setActiveTab('raw')}
-              className={`px-3 py-1 text-sm rounded-r-md border-l transition-colors ${
-                activeTab === 'raw' 
-                  ? 'bg-indigo-100 text-indigo-700 border-indigo-200' 
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              Raw JSON
+              <PrinterIcon className="w-4 h-4 mr-1" />
+              Print
             </button>
           </div>
         )}
@@ -195,7 +208,7 @@ const OutputPanel = ({ proofResult, loading, errors }) => {
 
       {/* Loading State */}
       {loading && (
-        <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
+        <div data-testid="proof-loading-indicator" className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-center justify-center">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
             <span className="text-blue-800">Processing proof generation...</span>
@@ -234,7 +247,7 @@ const OutputPanel = ({ proofResult, loading, errors }) => {
                   <h5 className="font-medium text-gray-800">Complete Response Object</h5>
                   <CopyButton content={proofResult} copyKey="raw-json" size="md" />
                 </div>
-                <pre className="bg-white p-3 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
+                <pre className="bg-slate-100 text-gray-900 p-3 rounded border text-xs overflow-auto max-h-96 whitespace-pre-wrap">
                   {JSON.stringify(proofResult, null, 2)}
                 </pre>
               </div>
@@ -255,6 +268,15 @@ const OutputPanel = ({ proofResult, loading, errors }) => {
             No proof generated yet. Enter your circuit code and inputs, then click "Generate ZK Proof".
           </p>
         </div>
+      )}
+      
+      {/* Print Report Modal */}
+      {showPrintReport && (
+        <PrintableReport
+          circuitData={circuitData}
+          proofResult={proofResult}
+          onClose={() => setShowPrintReport(false)}
+        />
       )}
     </div>
   );

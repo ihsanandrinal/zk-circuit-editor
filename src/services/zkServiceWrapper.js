@@ -1,5 +1,8 @@
 'use client';
 
+// Import global setup FIRST to ensure MidnightJS compatibility
+import './globalSetup.js';
+
 // Browser-safe wrapper for ZK service that handles dynamic imports gracefully
 
 class ZkServiceWrapper {
@@ -34,42 +37,15 @@ class ZkServiceWrapper {
         throw new Error('WebAssembly not supported - required for ZK computations');
       }
 
-      // Mock implementation for now to test the UI without MidnightJS complexity
-      this.zkService = {
-        generateProof: async (compactCode, publicInputs, privateInputs) => {
-          // Simulate processing time
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
-          console.log('Mock ZK proof generation:', {
-            compactCode: compactCode?.substring(0, 50) + '...',
-            publicInputs,
-            privateInputs
-          });
-
-          // Return a mock successful result
-          return {
-            success: true,
-            result: {
-              mockProof: true,
-              circuitHash: this._hashString(compactCode),
-              publicOutputs: this._mockCircuitExecution(publicInputs),
-              message: 'Mock ZK proof generated successfully. MidnightJS integration pending.'
-            },
-            metadata: {
-              timestamp: new Date().toISOString(),
-              compactCodeHash: this._hashString(compactCode),
-              publicInputsHash: this._hashString(JSON.stringify(publicInputs)),
-              browserInfo: {
-                userAgent: navigator.userAgent.substring(0, 100),
-                ...compatibility
-              }
-            }
-          };
-        }
-      };
+      // Use the real ZK service instead of mock
+      const { getZkService } = await import('./zkService.js');
+      this.zkService = getZkService();
+      
+      // Initialize the real service
+      await this.zkService.initialize();
 
       this.isInitialized = true;
-      console.log('ZK service wrapper initialized successfully (mock mode)');
+      console.log('ZK service wrapper initialized successfully with real ZK service');
 
     } catch (error) {
       console.error('Failed to initialize ZK service wrapper:', error);
@@ -89,37 +65,19 @@ class ZkServiceWrapper {
     return compatibility;
   }
 
-  // Mock circuit execution for demonstration
-  _mockCircuitExecution(publicInputs) {
-    if (publicInputs && typeof publicInputs === 'object') {
-      // Simple mock: if we see a and b, return their sum
-      if ('a' in publicInputs && 'b' in publicInputs) {
-        return { result: Number(publicInputs.a) + Number(publicInputs.b) };
-      }
-    }
-    return { result: 42 }; // Default mock result
-  }
-
-  _hashString(str) {
-    let hash = 0;
-    if (str.length === 0) return hash.toString();
-    
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
-    }
-    
-    return Math.abs(hash).toString(16);
-  }
+  // Utility methods removed - using real service now
 
   // Method to get service status
   getServiceStatus() {
+    if (this.zkService && this.isInitialized) {
+      return this.zkService.getServiceStatus();
+    }
+    
     return {
       isInitialized: this.isInitialized,
       isReady: this.isInitialized,
-      mode: 'mock',
-      message: 'Running in demonstration mode - ZK proof generation is simulated for UI testing',
+      mode: 'initializing',
+      message: 'ZK service wrapper is initializing...',
       error: null
     };
   }
@@ -145,6 +103,7 @@ class ZkServiceWrapper {
         throw new Error('Invalid private inputs: must be an object');
       }
 
+      // Use the real service's generateProof method  
       return await this.zkService.generateProof(compactCode, publicInputs, privateInputs);
 
     } catch (error) {

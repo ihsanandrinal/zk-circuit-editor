@@ -1,11 +1,16 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+// Import global setup FIRST to ensure MidnightJS compatibility
+import '../services/globalSetup.js';
+
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import CodeEditor from './CodeEditor.jsx';
 import InputPanel from './InputPanel.jsx';
 import OutputPanel from './OutputPanel.jsx';
 import LoadingIndicator from './LoadingIndicator.jsx';
 import ExampleSelector from './ExampleSelector.jsx';
+import KeyboardShortcutsHelp from './KeyboardShortcutsHelp.jsx';
+import { useZKPlaygroundShortcuts } from '../hooks/useKeyboardShortcuts.js';
 
 const ZKPlayground = () => {
   // Main state management
@@ -26,11 +31,63 @@ circuit AdditionCircuit {
   const [serviceStatus, setServiceStatus] = useState(null);
   const [selectedExample, setSelectedExample] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  const fileInputRef = useRef(null);
 
   // Client-side initialization
   useEffect(() => {
     setIsClient(true);
+    // Load saved state from localStorage
+    loadAutoSavedState();
   }, []);
+
+  // Auto-save functionality
+  const saveToLocalStorage = useCallback(() => {
+    if (!autoSaveEnabled) return;
+    
+    const state = {
+      compactCode,
+      publicInputs,
+      privateInputs,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Only save non-sensitive data
+    const sanitizedState = {
+      ...state,
+      privateInputs: '{}' // Don't persist private inputs for privacy
+    };
+    
+    try {
+      localStorage.setItem('zkCircuitEditor', JSON.stringify(sanitizedState));
+    } catch (error) {
+      console.warn('Failed to auto-save to localStorage:', error);
+    }
+  }, [compactCode, publicInputs, privateInputs, autoSaveEnabled]);
+
+  const loadAutoSavedState = useCallback(() => {
+    try {
+      const saved = localStorage.getItem('zkCircuitEditor');
+      if (saved) {
+        const state = JSON.parse(saved);
+        if (state.compactCode) {
+          setCompactCode(state.compactCode);
+          setPublicInputs(state.publicInputs || '{}');
+          // Note: privateInputs are not restored for privacy
+          console.log('Restored auto-saved circuit from:', state.timestamp);
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load auto-saved state:', error);
+    }
+  }, []);
+
+  // Auto-save when content changes
+  useEffect(() => {
+    const timeoutId = setTimeout(saveToLocalStorage, 2000); // 2 second debounce
+    return () => clearTimeout(timeoutId);
+  }, [saveToLocalStorage]);
 
   // Lazy load ZK service
   const loadZkService = useCallback(async () => {
@@ -185,7 +242,101 @@ circuit AdditionCircuit {
     setErrors(null);
     setSelectedExample(null);
     setHasUnsavedChanges(false);
+    localStorage.removeItem('zkCircuitEditor');
   }, []);
+
+  // Export functionality
+  const handleExportResults = useCallback(() => {
+    const exportData = {
+      circuit: {
+        code: compactCode,
+        publicInputs: JSON.parse(publicInputs),
+        privateInputs: JSON.parse(privateInputs)
+      },
+      result: proofResult,
+      timestamp: new Date().toISOString(),
+      version: '1.0'
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: 'application/json'
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `zk-circuit-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [compactCode, publicInputs, privateInputs, proofResult]);
+
+  // Import functionality
+  const handleImportCircuit = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleFileImport = useCallback((event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.circuit) {
+          setCompactCode(data.circuit.code);
+          setPublicInputs(JSON.stringify(data.circuit.publicInputs, null, 2));
+          setPrivateInputs(JSON.stringify(data.circuit.privateInputs, null, 2));
+          setSelectedExample(null);
+          setProofResult(data.result || null);
+          console.log('Imported circuit successfully');
+        }
+      } catch (error) {
+        setErrors('Failed to import file: Invalid format');
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = ''; // Reset input
+  }, []);
+
+  // Manual save function
+  const handleSaveCircuit = useCallback(() => {
+    saveToLocalStorage();
+    // Also offer download
+    const circuitData = {
+      code: compactCode,
+      publicInputs: JSON.parse(publicInputs),
+      privateInputs: {}, // Don't export private inputs
+      timestamp: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(circuitData, null, 2)], {
+      type: 'application/json'
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `circuit-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [compactCode, publicInputs, saveToLocalStorage]);
+
+  // Keyboard shortcuts setup
+  const shortcuts = useZKPlaygroundShortcuts({
+    generateProof: handleGenerateProof,
+    saveCircuit: handleSaveCircuit,
+    loadCircuit: handleImportCircuit,
+    exportResults: handleExportResults,
+    clearAll: handleReset,
+    refresh: () => window.location.reload(),
+    escape: () => {
+      setShowExportModal(false);
+      setErrors(null);
+    }
+  });
 
   // Only render on client side to prevent SSR issues
   if (!isClient) {
@@ -229,6 +380,30 @@ circuit AdditionCircuit {
           {/* Controls */}
           <div className="flex flex-wrap gap-2">
             <button
+              onClick={handleSaveCircuit}
+              disabled={loading}
+              className="px-3 py-2 text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-md border border-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Save circuit (Ctrl+S)"
+            >
+              Save Circuit
+            </button>
+            <button
+              onClick={handleImportCircuit}
+              disabled={loading}
+              className="px-3 py-2 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-md border border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Load circuit (Ctrl+O)"
+            >
+              Load Circuit
+            </button>
+            <button
+              onClick={handleExportResults}
+              disabled={loading || !proofResult}
+              className="px-3 py-2 text-sm bg-green-100 hover:bg-green-200 text-green-700 rounded-md border border-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Export results (Ctrl+Shift+E)"
+            >
+              Export Results
+            </button>
+            <button
               onClick={handleClearResults}
               disabled={loading || !proofResult}
               className="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -239,6 +414,7 @@ circuit AdditionCircuit {
               onClick={handleReset}
               disabled={loading}
               className="px-3 py-2 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded-md border border-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Reset all (Ctrl+Shift+C)"
             >
               Reset All
             </button>
@@ -278,6 +454,8 @@ circuit AdditionCircuit {
           <div className={`mb-4 p-3 rounded-lg border ${
             serviceStatus.mode === 'production'
               ? 'bg-green-50 border-green-200'
+              : serviceStatus.mode === 'warning'
+              ? 'bg-green-50 border-green-200'
               : serviceStatus.mode === 'mock'
               ? 'bg-yellow-50 border-yellow-200'
               : serviceStatus.mode === 'error'
@@ -287,12 +465,15 @@ circuit AdditionCircuit {
             <div className="flex items-center space-x-2">
               <span className="text-sm">
                 {serviceStatus.mode === 'production' ? '🟢' : 
+                 serviceStatus.mode === 'warning' ? '🟢' : 
                  serviceStatus.mode === 'mock' ? '🟡' : 
                  serviceStatus.mode === 'error' ? '🔴' : '🔵'}
               </span>
               <div className="flex-1">
                 <span className={`text-sm font-medium ${
                   serviceStatus.mode === 'production'
+                    ? 'text-green-800'
+                    : serviceStatus.mode === 'warning'
                     ? 'text-green-800'
                     : serviceStatus.mode === 'mock'
                     ? 'text-yellow-800'
@@ -301,11 +482,14 @@ circuit AdditionCircuit {
                     : 'text-blue-800'
                 }`}>
                   {serviceStatus.mode === 'production' ? 'Production Mode' :
+                   serviceStatus.mode === 'warning' ? 'Production Mode' :
                    serviceStatus.mode === 'mock' ? 'Demo Mode' :
                    serviceStatus.mode === 'error' ? 'Service Error' : 'Initializing...'}
                 </span>
                 <p className={`text-xs mt-0.5 ${
                   serviceStatus.mode === 'production'
+                    ? 'text-green-700'
+                    : serviceStatus.mode === 'warning'
                     ? 'text-green-700'
                     : serviceStatus.mode === 'mock'
                     ? 'text-yellow-700'
@@ -362,10 +546,48 @@ circuit AdditionCircuit {
               proofResult={proofResult}
               loading={loading}
               errors={errors}
+              circuitData={{
+                code: compactCode,
+                publicInputs: (() => {
+                  try { return JSON.parse(publicInputs || '{}'); } catch { return {}; }
+                })(),
+                privateInputs: (() => {
+                  try { return JSON.parse(privateInputs || '{}'); } catch { return {}; }
+                })()
+              }}
             />
           </div>
         </div>
+        
+        {/* Hidden file input for imports */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          onChange={handleFileImport}
+          style={{ display: 'none' }}
+        />
+        
+        {/* Auto-save toggle */}
+        <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
+          <div className="flex items-center space-x-2">
+            <input
+              id="auto-save"
+              type="checkbox"
+              checked={autoSaveEnabled}
+              onChange={(e) => setAutoSaveEnabled(e.target.checked)}
+              className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label htmlFor="auto-save">Auto-save to browser storage (private inputs excluded)</label>
+          </div>
+          <div className="text-xs text-gray-500">
+            Use Ctrl+Enter to generate proof from anywhere
+          </div>
+        </div>
       </div>
+      
+      {/* Keyboard Shortcuts Help */}
+      <KeyboardShortcutsHelp shortcuts={shortcuts} />
     </div>
   );
 };
