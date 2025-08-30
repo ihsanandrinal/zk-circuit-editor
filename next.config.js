@@ -6,6 +6,9 @@ const nextConfig = {
   },
   
   webpack: (config, { isServer }) => {
+    // Set target for modern JavaScript support
+    config.target = isServer ? 'node' : ['web', 'es2020'];
+    
     // WASM support
     config.experiments = {
       ...config.experiments,

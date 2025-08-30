@@ -9,10 +9,9 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "node copy-wasm.js && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "node copy-wasm.js",
     "test": "jest --config jest.config.cjs --passWithNoTests",
     "test:watch": "jest --config jest.config.cjs --watch",
     "test:coverage": "jest --config jest.config.cjs --coverage",
