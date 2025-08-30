@@ -1,24 +1,38 @@
 // src/services/zkService.client.js
 
+// This variable will hold our initialized service instance
 let serviceInstance = null;
 
+// This is the function our React components will call
 export async function getZkService() {
+  // If the service is already initialized, return it immediately
   if (serviceInstance) {
     return serviceInstance;
   }
 
+  // Dynamically import the libraries ONLY in the browser
   const Ledger = await import('@midnight-ntwrk/ledger');
   const OnchainRuntime = await import('@midnight-ntwrk/onchain-runtime');
 
-  // --- THIS IS THE DEBUGGING CODE ---
-  console.log("Inspecting @midnight-ntwrk/ledger:", Ledger);
-  console.log("Inspecting @midnight-ntwrk/onchain-runtime:", OnchainRuntime);
-  // ---------------------------------
+  try {
+    console.log("Starting final WASM initialization...");
 
-  // We are temporarily stopping the code here to prevent the crash.
-  // The line below is commented out.
-  // await Ledger.default(); 
+    // Call the real initialization function we discovered in the console
+    Ledger.__wbindgen_init_externref_table();
+    OnchainRuntime.__wbindgen_init_externref_table();
 
-  // For now, we'll just throw an error to show that inspection is done.
-  throw new Error("Inspection complete. Check the browser console.");
+    console.log('✅✅✅ MidnightJS WASM modules have been successfully initialized!');
+
+    // Our "service" is the collection of loaded modules
+    serviceInstance = {
+      Ledger,
+      OnchainRuntime,
+    };
+
+    return serviceInstance;
+
+  } catch (error) {
+    console.error("An error occurred during final WASM initialization:", error);
+    throw error;
+  }
 }
