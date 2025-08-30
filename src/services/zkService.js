@@ -444,4 +444,9 @@ export const getMaxField = async () => {
   return productionZkService.getMaxField();
 };
 
+// New initialization function for the custom hook
+export const initialize = async () => {
+  return await productionZkService.initialize();
+};
+
 export default productionZkService;

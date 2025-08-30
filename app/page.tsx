@@ -8,10 +8,55 @@ import ZKPlayground from "../src/components/ZKPlayground";
 import ZKWorkflow from "../src/components/ZKWorkflow";
 import ErrorBoundary from "../src/components/ErrorBoundary";
 import ZKServiceErrorBoundary from "../src/components/ZKServiceErrorBoundary";
+import { useZkService } from "../src/hooks/useZkService";
 
 export default function Home() {
   const [viewMode, setViewMode] = useState('workflow'); // 'playground' or 'workflow'
+  
+  // Use our custom hook to get the initialization status
+  const { error, isReady } = useZkService();
 
+  // Show error state if there's an initialization error
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="text-red-600 text-6xl mb-4">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">ZK Engine Initialization Failed</h2>
+          <p className="text-gray-600 mb-4">
+            {error ? String(error) : 'Failed to initialize the ZK proof engine.'}
+          </p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading state until the WASM is ready
+  if (!isReady) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="animate-spin text-blue-600 text-6xl mb-4">⚙️</div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Initializing ZK Engine</h2>
+          <p className="text-gray-600 mb-4">
+            Loading WebAssembly modules and setting up the zero-knowledge proof engine...
+          </p>
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+            <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{width: '60%'}}></div>
+          </div>
+          <p className="text-sm text-gray-500">This may take a few moments on first load.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Once initialized, render the actual application
   return (
     <div className="min-h-screen bg-gray-50">
       {/* View Mode Toggle */}
